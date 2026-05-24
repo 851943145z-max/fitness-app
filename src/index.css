@@ -1,0 +1,5 @@
+/* index.css — 全局样式文件 */
+/* 这三行是启动 Tailwind CSS 必须写的，不用改 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
