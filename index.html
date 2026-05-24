@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 让手机端显示正常，不会缩小页面 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的健身打卡 App</title>
+
+    <!-- ── PWA 配置（让浏览器知道这是一个可安装的 App）── -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ── 苹果设备专属配置 ── -->
+    <!-- 允许"添加到主屏幕"后全屏运行（不显示 Safari 地址栏）-->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- 顶部状态栏样式：default = 白色，black-translucent = 透明 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- 主屏幕图标下面显示的 App 名字 -->
+    <meta name="apple-mobile-web-app-title" content="健身打卡" />
+    <!-- 主屏幕图标（苹果设备用这个，不用 manifest 里的）-->
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+
+    <!-- 浏览器顶栏颜色变成绿色（Android Chrome 效果明显）-->
+    <meta name="theme-color" content="#10b981" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
