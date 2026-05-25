@@ -11,3 +11,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>,
 )
+
+// ── 注册 Service Worker（让 App 可以安装到手机桌面）──
+// 只有在正式部署环境（https）才注册，本地开发时不用
+if ('serviceWorker' in navigator) {
+  // window.addEventListener('load') 表示等页面加载完再注册，不影响首屏速度
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
+        console.log('[PWA] Service Worker 注册成功！', registration.scope)
+      })
+      .catch((error) => {
+        console.log('[PWA] Service Worker 注册失败：', error)
+      })
+  })
+}

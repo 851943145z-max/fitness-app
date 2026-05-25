@@ -1,0 +1,23 @@
+# netlify.toml — Netlify 部署配置文件
+# 告诉 Netlify 怎么构建这个项目、把哪个文件夹发布出去
+
+[build]
+  # 构建命令：运行 npm run build，生成 dist 文件夹
+  command = "npm run build"
+  # 发布目录：把 dist 文件夹里的内容对外发布
+  publish = "dist"
+  # Node 版本
+  environment = { NODE_VERSION = "20" }
+
+# 处理单页应用（SPA）的路由问题
+# 当用户直接访问 /history 这样的路径，返回 index.html，让 React 处理路由
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Service Worker 不走缓存，确保每次都是最新版本
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
