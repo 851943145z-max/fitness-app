@@ -11,6 +11,12 @@ export const TRAINING_SPLITS = [
     bodyParts: null,   // null 表示显示所有部位
   },
   {
+    id: 'warmup',
+    name: '热身',
+    subtitle: '活动 · 拉伸',
+    bodyParts: [],     // 热身动作板块，待添加动作
+  },
+  {
     id: 'push',
     name: '推类',
     subtitle: '胸 · 肩 · 三头',
@@ -63,7 +69,6 @@ export const EQUIPMENT_FILTERS = [
   { id: 'barbell',    name: '杠铃' },
   { id: 'smith',      name: '史密斯' },
   { id: 'cable',      name: '绳索' },
-  { id: 'band',       name: '弹力带' },
   { id: 'bodyweight', name: '自重' },
 ]
 

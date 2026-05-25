@@ -31,38 +31,23 @@ function WorkoutLog() {
   const [inputSets,   setInputSets]   = useState('')
   const [inputWeight, setInputWeight] = useState('')
 
-  // currentExercise：当前选中/匹配到的动作对象（来自数据库），用于显示肌肉图
-  // 如果用户输入的动作名不在数据库里，这里是 null
   const [currentExercise, setCurrentExercise] = useState(null)
-
-  // suggestions：根据输入文字实时过滤出的动作建议列表
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions,     setSuggestions]     = useState([])
 
   const todayRecords = allRecords.filter(r => r.date === todayKey)
-
-  // ── 动作名输入框变化时 ──────────────────────────────
 
   function handleNameChange(e) {
     const value = e.target.value
     setInputName(value)
-
-    // 实时搜索匹配的动作（最多5条）
     setSuggestions(searchExercises(value))
-
-    // 如果输入的名字和数据库精确匹配，直接显示肌肉图
-    const matched = findExercise(value)
-    setCurrentExercise(matched)
+    setCurrentExercise(findExercise(value))
   }
-
-  // ── 点击动作建议时 ──────────────────────────────────
 
   function handleSelectSuggestion(exercise) {
     setInputName(exercise.name)
     setCurrentExercise(exercise)
-    setSuggestions([])   // 收起建议列表
+    setSuggestions([])
   }
-
-  // ── 添加记录 ──────────────────────────────────────────
 
   function handleAdd() {
     if (!inputName.trim()) return
@@ -73,14 +58,13 @@ function WorkoutLog() {
       name:    inputName.trim(),
       sets:    inputSets.trim(),
       weight:  inputWeight.trim(),
-      muscles: currentExercise ? currentExercise.muscles : [],  // 保存激活的肌肉群
+      muscles: currentExercise ? currentExercise.muscles : [],
     }
 
     const updated = [...allRecords, newRecord]
     setAllRecords(updated)
     saveRecords(updated)
 
-    // 清空输入框和状态
     setInputName('')
     setInputSets('')
     setInputWeight('')
@@ -92,20 +76,16 @@ function WorkoutLog() {
     if (e.key === 'Enter') handleAdd()
   }
 
-  // ── 删除记录 ──────────────────────────────────────────
-
   function handleDelete(id) {
     const updated = allRecords.filter(r => r.id !== id)
     setAllRecords(updated)
     saveRecords(updated)
   }
 
-  // ── 页面渲染 ──────────────────────────────────────────
-
   return (
     <div className="w-full max-w-sm">
 
-      <h2 className="text-base font-semibold text-gray-500 mb-3 text-center tracking-wide">
+      <h2 className="text-base font-bold text-white mb-3 text-center tracking-wide">
         今日训练记录
       </h2>
 
@@ -121,10 +101,10 @@ function WorkoutLog() {
             onChange={handleNameChange}
             onKeyDown={handleKeyDown}
             className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm
-                       focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-200"
+                       focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-200"
           />
 
-          {/* 动作建议下拉列表（输入时出现）*/}
+          {/* 动作建议下拉列表 */}
           {suggestions.length > 0 && (
             <div className="absolute top-full left-0 right-0 z-10 mt-1
                             bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
@@ -132,7 +112,7 @@ function WorkoutLog() {
                 <button
                   key={ex.name}
                   onClick={() => handleSelectSuggestion(ex)}
-                  className="w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50
+                  className="w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50
                              flex items-center justify-between border-b border-gray-50 last:border-0"
                 >
                   <span className="font-medium text-gray-700">{ex.name}</span>
@@ -146,9 +126,7 @@ function WorkoutLog() {
         {/* 肌肉示意图（选中动作后显示）*/}
         {currentExercise && (
           <div className="bg-gray-50 rounded-xl p-3">
-            {/* 动作简介 */}
             <p className="text-xs text-gray-500 text-center mb-1">{currentExercise.desc}</p>
-            {/* 人体肌肉图 */}
             <MuscleMap muscles={currentExercise.muscles} />
           </div>
         )}
@@ -162,7 +140,7 @@ function WorkoutLog() {
             onChange={e => setInputSets(e.target.value)}
             onKeyDown={handleKeyDown}
             className="w-1/2 border border-gray-200 rounded-xl px-4 py-2 text-sm
-                       focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-200"
+                       focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-200"
           />
           <input
             type="number"
@@ -171,14 +149,14 @@ function WorkoutLog() {
             onChange={e => setInputWeight(e.target.value)}
             onKeyDown={handleKeyDown}
             className="w-1/2 border border-gray-200 rounded-xl px-4 py-2 text-sm
-                       focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-200"
+                       focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-200"
           />
         </div>
 
         {/* 添加按钮 */}
         <button
           onClick={handleAdd}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95
+          className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95
                      text-white font-semibold rounded-xl py-2 text-sm
                      transition-all duration-150"
         >
@@ -199,7 +177,7 @@ function WorkoutLog() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-400 text-xs mt-4">
+        <p className="text-center text-slate-400 text-xs mt-4">
           还没有记录，添加今天的训练吧 💪
         </p>
       )}
@@ -209,18 +187,14 @@ function WorkoutLog() {
 }
 
 // ── 单条训练记录卡片 ──────────────────────────────────────
-// 独立成小组件，让代码更清晰
 
 function RecordCard({ record, onDelete }) {
-  // expanded：是否展开显示肌肉图
   const [expanded, setExpanded] = useState(false)
-
   const hasMuscles = record.muscles && record.muscles.length > 0
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
 
-      {/* 顶部：动作名 + 组数重量 + 展开/删除按钮 */}
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
           <span className="font-semibold text-gray-700 text-sm">{record.name}</span>
@@ -234,28 +208,23 @@ function RecordCard({ record, onDelete }) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 展开肌肉图按钮（只有数据库里有的动作才显示）*/}
           {hasMuscles && (
             <button
               onClick={() => setExpanded(!expanded)}
-              className="text-xs text-emerald-500 hover:text-emerald-700 transition-colors"
-              title="查看训练部位"
+              className="text-xs text-orange-500 hover:text-orange-700 transition-colors"
             >
               {expanded ? '收起' : '部位'}
             </button>
           )}
-          {/* 删除按钮 */}
           <button
             onClick={onDelete}
             className="text-gray-300 hover:text-red-400 text-xl leading-none transition-colors"
-            title="删除"
           >
             ×
           </button>
         </div>
       </div>
 
-      {/* 展开的肌肉图区域（点击"部位"按钮后显示）*/}
       {expanded && hasMuscles && (
         <div className="border-t border-gray-50 bg-gray-50 px-4 pb-3 pt-2">
           <MuscleMap muscles={record.muscles} />

@@ -10,6 +10,7 @@ import {
   TYPE_COLOR,
   exerciseLibrary,
 } from '../data/exerciseLibrary.js'
+import MuscleIllustration from '../components/MuscleIllustration.jsx'
 
 // ── 动作卡片 ──────────────────────────────────────────────
 
@@ -22,32 +23,34 @@ function ExerciseCard({ exercise, onClick }) {
       className="bg-white rounded-2xl shadow-sm overflow-hidden text-left
                  active:scale-95 transition-transform w-full"
     >
-      {/* 图片区域 */}
-      <div className="bg-gray-100 aspect-[4/3] flex items-center justify-center relative overflow-hidden">
+      {/* 图片区域：有图显示图，无图显示紧凑占位 */}
+      <div className="relative overflow-hidden">
         {!imgError ? (
-          <img
-            src={`/images/exercises/${exercise.imageKey}.png`}
-            alt={exercise.name}
-            className="w-full h-full object-cover"
-            onError={() => setImgError(true)}
-          />
+          <div className="bg-gray-100 aspect-[4/3] flex items-center justify-center relative">
+            <img
+              src={`/images/exercises/${exercise.imageKey}.png`}
+              alt={exercise.name}
+              className="w-full h-full object-cover"
+              onError={() => setImgError(true)}
+            />
+            <span className="absolute top-1.5 left-1.5 bg-black/40 text-white text-[10px]
+                             px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+              {exercise.equipment}
+            </span>
+          </div>
         ) : (
-          // 图片不存在时的占位符
-          <div className="flex flex-col items-center gap-1 text-gray-300">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <path d="M21 15l-5-5L5 21"/>
-            </svg>
-            <span className="text-[10px]">图片待补充</span>
+          // 无图时用肌肉示意图替代
+          <div className="bg-slate-50 flex items-center justify-center aspect-[4/3] relative">
+            <MuscleIllustration
+              primaryMuscles={exercise.primaryMuscles}
+              secondaryMuscles={exercise.secondaryMuscles}
+            />
+            <span className="absolute top-1.5 right-1.5 bg-orange-100 text-orange-600
+                             text-[9px] px-1.5 py-0.5 rounded-full font-medium">
+              {exercise.equipment}
+            </span>
           </div>
         )}
-
-        {/* 器械标签（左上角）*/}
-        <span className="absolute top-1.5 left-1.5 bg-black/40 text-white text-[10px]
-                         px-1.5 py-0.5 rounded-full backdrop-blur-sm">
-          {exercise.equipment}
-        </span>
       </div>
 
       {/* 文字区域 */}
@@ -202,6 +205,10 @@ function ExerciseLibraryPage() {
   // 当前打开的动作详情
   const [detailExercise, setDetailExercise] = useState(null)
 
+  // 搜索相关状态
+  const [searchQuery, setSearchQuery] = useState('')   // 搜索关键词
+  const [searchOpen,  setSearchOpen]  = useState(false) // 搜索框是否展开
+
   // ── 当训练日切换时，若当前部位不属于新训练日则重置 ──
 
   function handleSplitChange(splitId) {
@@ -237,13 +244,20 @@ function ExerciseLibraryPage() {
   // ── 三重筛选：同时满足训练日 + 部位 + 器械 ──
 
   const filteredExercises = useMemo(() => {
+    const q = searchQuery.trim()
     return exerciseLibrary.filter(ex => {
       const splitOk     = selectedSplit     === 'all' || ex.split       === selectedSplit
       const bodyPartOk  = selectedBodyPart  === 'all' || ex.bodyPart    === BODY_PART_CATEGORIES.find(b => b.id === selectedBodyPart)?.name
       const equipmentOk = selectedEquipment === 'all' || ex.equipmentId === selectedEquipment
-      return splitOk && bodyPartOk && equipmentOk
+      // 搜索过滤：匹配动作名、部位、器械、主练肌群（空关键词则不过滤）
+      const searchOk    = !q ||
+        ex.name.includes(q) ||
+        ex.bodyPart.includes(q) ||
+        ex.equipment.includes(q) ||
+        ex.primaryMuscles.some(m => m.includes(q))
+      return splitOk && bodyPartOk && equipmentOk && searchOk
     })
-  }, [selectedSplit, selectedBodyPart, selectedEquipment])
+  }, [selectedSplit, selectedBodyPart, selectedEquipment, searchQuery])
 
   // ── 渲染 ──────────────────────────────────────────────
 
@@ -257,8 +271,59 @@ function ExerciseLibraryPage() {
         {/* 页面标题 */}
         <div className="px-4 pt-4 pb-2 flex items-center justify-between">
           <h1 className="text-lg font-bold text-gray-800">动作库</h1>
-          <span className="text-xs text-gray-400">{filteredExercises.length} 个动作</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-400">{filteredExercises.length} 个动作</span>
+            {/* 搜索图标按钮：点击展开/收起搜索框 */}
+            <button
+              onClick={() => {
+                setSearchOpen(prev => !prev)
+                if (searchOpen) setSearchQuery('')  // 收起时清空关键词
+              }}
+              className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                searchOpen
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              {/* 放大镜 SVG */}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* 搜索输入框（展开时显示）*/}
+        {searchOpen && (
+          <div className="px-4 pb-2.5 flex items-center gap-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="搜索动作名称、部位、器械..."
+              autoFocus
+              className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2
+                         focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100
+                         bg-white placeholder-gray-300"
+            />
+            {/* 清空按钮（有内容才显示）*/}
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="w-7 h-7 flex items-center justify-center rounded-full
+                           bg-gray-100 text-gray-400 hover:bg-gray-200 flex-shrink-0"
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
 
         {/* 训练日筛选（横向滚动）*/}
         <div className="overflow-x-auto px-4 pb-2 flex gap-2 scrollbar-hide">
@@ -273,12 +338,8 @@ function ExerciseLibraryPage() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
               ].join(' ')}
             >
-              <span>{split.name}</span>
-              {split.subtitle && (
-                <span className={`ml-1 ${selectedSplit === split.id ? 'text-blue-100' : 'text-gray-400'}`}>
-                  {split.subtitle}
-                </span>
-              )}
+              {/* 只显示 subtitle（如"胸·肩·三头"），全部类型直接显示名称 */}
+              {split.subtitle ? split.subtitle : split.name}
             </button>
           ))}
         </div>
