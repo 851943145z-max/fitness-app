@@ -28,7 +28,7 @@ function ExerciseCard({ exercise, onClick }) {
         {!imgError ? (
           <div className="bg-gray-100 aspect-[4/3] flex items-center justify-center relative">
             <img
-              src={`/images/exercises/${exercise.imageKey}.png`}
+              src={`${import.meta.env.BASE_URL}images/exercises/${exercise.imageKey}.png`}
               alt={exercise.name}
               className="w-full h-full object-cover"
               onError={() => setImgError(true)}
@@ -112,7 +112,7 @@ function ExerciseDetailModal({ exercise, onClose }) {
         <div className="bg-gray-100 mx-4 rounded-2xl aspect-video flex items-center justify-center overflow-hidden mb-4">
           {!imgError ? (
             <img
-              src={`/images/exercises/${exercise.imageKey}.png`}
+              src={`${import.meta.env.BASE_URL}images/exercises/${exercise.imageKey}.png`}
               alt={exercise.name}
               className="w-full h-full object-cover"
               onError={() => setImgError(true)}
