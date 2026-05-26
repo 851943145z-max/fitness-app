@@ -3,7 +3,7 @@
 // Service Worker 相当于在浏览器后台运行的一个"小管家"
 
 // 缓存版本号 —— 每次更新代码时改一下这个数字，让旧缓存失效
-const CACHE_VERSION = 'v1.0.0'
+const CACHE_VERSION = 'v2.0.0'
 const CACHE_NAME = `jianshendaka-${CACHE_VERSION}`
 
 // 安装阶段：把关键文件存进缓存，这样断网也能用
