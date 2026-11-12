@@ -1,10 +1,11 @@
 // App.jsx — 应用入口
-// 管理底部导航（今日 / 动作库 / 计划 / 进步）
+// 管理底部导航（今日 / 动作库 / 计划 / 饮食 / 进步）
 
 import { useState } from 'react'
 import TodayPage           from './pages/TodayPage.jsx'
 import ExerciseLibraryPage from './pages/ExerciseLibraryPage.jsx'
 import PlanPage            from './pages/PlanPage.jsx'
+import NutritionPage       from './pages/NutritionPage.jsx'
 import ProgressPage        from './pages/ProgressPage.jsx'
 
 // 底部导航配置
@@ -12,6 +13,7 @@ const TABS = [
   { id: 'today',    icon: '🏠', label: '今日'  },
   { id: 'library',  icon: '📚', label: '动作库' },
   { id: 'plan',     icon: '📋', label: '计划'  },
+  { id: 'nutrition', icon: '🍽️', label: '饮食'  },
   { id: 'progress', icon: '📈', label: '进步'  },
 ]
 
@@ -33,6 +35,7 @@ export default function App() {
           {currentTab === 'today'    && <TodayPage />}
           {currentTab === 'library'  && <ExerciseLibraryPage />}
           {currentTab === 'plan'     && <PlanPage />}
+          {currentTab === 'nutrition' && <NutritionPage />}
           {currentTab === 'progress' && <ProgressPage />}
         </main>
 
@@ -43,6 +46,7 @@ export default function App() {
             <button
               key={tab.id}
               onClick={() => setCurrentTab(tab.id)}
+              aria-current={currentTab === tab.id ? 'page' : undefined}
               className={[
                 'flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors relative',
                 currentTab === tab.id
