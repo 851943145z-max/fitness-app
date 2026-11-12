@@ -3,9 +3,9 @@ import { useState } from 'react'
 import CheckinCalendar from '../components/CheckinCalendar.jsx'
 import {
   getStreak, getWeeklyCount, getMonthlyCount,
-  hasTodaySession, loadPRs, saveSession,
+  getTodaySession, loadPRs, saveSession,
 } from '../utils/workoutStats.js'
-import { getActivePlan, getNextWorkoutDay } from '../data/workoutPlans.js'
+import { ALL_PLANS, getActivePlan, getNextWorkoutDay } from '../data/workoutPlans.js'
 import { exerciseLibrary } from '../data/exerciseLibrary.js'
 
 function getTodayText() {
@@ -14,44 +14,58 @@ function getTodayText() {
   })
 }
 
-function TodayWorkoutCard({ workoutDay, isDone, onCheckIn }) {
+function TodayPlan({ workoutDay }) {
   if (!workoutDay) {
     return (
-      <section className="rounded-3xl bg-emerald-50 p-5">
-        <h2 className="text-xl font-bold">今天是休息日</h2>
+      <section className="rounded-2xl bg-emerald-50 p-4">
+        <h2 className="text-base font-semibold text-emerald-800">今日计划</h2>
+        <p className="mt-1 text-xl font-bold text-slate-950">今天是休息日</p>
       </section>
     )
   }
 
   return (
-    <section className="rounded-3xl bg-emerald-50 p-5">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-emerald-800">
-        <span>{isDone ? '今日已完成' : '今日计划'}</span>
-        <span className="font-medium">{workoutDay.exercises.length} 个动作 · {workoutDay.estimatedMinutes} 分钟</span>
-      </div>
-
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">{workoutDay.name}</h2>
-      <p className="mt-1 text-sm text-slate-600">{workoutDay.muscles}</p>
-
-      <ul className="my-4 grid grid-cols-2 gap-x-3 gap-y-1.5 border-t border-emerald-100 pt-3">
-        {workoutDay.exercises.map(({ exerciseId }, index) => {
-          const exercise = exerciseLibrary.find(entry => entry.id === exerciseId)
-          return (
-            <li key={`${exerciseId}-${index}`} className="flex items-start gap-1.5 text-xs leading-relaxed text-slate-700">
-              <span aria-hidden="true" className="mt-1.5 size-1 shrink-0 rounded-full bg-emerald-600" />
-              {exercise?.name || exerciseId}
-            </li>
-          )
-        })}
-      </ul>
-
-      {!isDone && (
-        <button type="button" onClick={onCheckIn}
-          className="min-h-11 w-full rounded-xl bg-emerald-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800">
-          完成今日训练
-        </button>
-      )}
+    <section className="rounded-2xl bg-emerald-50 p-4">
+      <h2 className="text-base font-semibold text-emerald-800">今日计划</h2>
+      <p className="mt-1 text-2xl font-bold leading-tight tracking-tight text-slate-950">{workoutDay.name}</p>
+      <p className="mt-1 text-base text-slate-600">{workoutDay.muscles}</p>
+      <details className="group mt-2">
+        <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between gap-2 rounded-lg
+                            border-t border-emerald-100 text-sm font-medium text-emerald-900 [&::-webkit-details-marker]:hidden">
+          <span>{workoutDay.exercises.length} 个动作 · {workoutDay.estimatedMinutes} 分钟</span>
+          <span className="group-open:hidden">查看动作</span>
+          <span className="hidden group-open:inline">收起动作</span>
+        </summary>
+        <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-2 pb-1">
+          {workoutDay.exercises.map(({ exerciseId }, index) => {
+            const exercise = exerciseLibrary.find(entry => entry.id === exerciseId)
+            return (
+              <li key={`${exerciseId}-${index}`} className="flex items-start gap-1.5 text-sm leading-snug text-slate-700">
+                <span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-emerald-600" />
+                {exercise?.name || exerciseId}
+              </li>
+            )
+          })}
+        </ul>
+      </details>
     </section>
+  )
+}
+
+function CheckInButton({ isDone, onCheckIn }) {
+  return (
+    <div className="flex justify-center py-3">
+      <button type="button" onClick={onCheckIn} aria-disabled={isDone}
+        className={`flex size-[clamp(8.75rem,42vw,11rem)] flex-col items-center justify-center gap-1
+          rounded-full border-4 border-white font-bold ring-4 ring-emerald-100 transition
+          ${isDone ? 'bg-emerald-50 text-emerald-800' :
+            'bg-emerald-700 text-white shadow-lg shadow-emerald-900/15 hover:bg-emerald-800 motion-safe:active:scale-95'}`}>
+        {isDone && <span aria-hidden="true" className="text-3xl leading-none">✓</span>}
+        <span aria-live="polite" className={isDone ? 'text-xl' : 'text-4xl tracking-wider'}>
+          {isDone ? '已打卡' : '打卡'}
+        </span>
+      </button>
+    </div>
   )
 }
 
@@ -64,8 +78,8 @@ function StatsRow({ streak, weekly, monthly }) {
         { label: '本月打卡', value: monthly, unit: '次' },
       ].map(({ label, value, unit }) => (
         <div key={label} className="flex flex-col-reverse gap-0.5">
-          <dt className="text-xs text-slate-600">{label}</dt>
-          <dd className="text-2xl font-bold tabular-nums text-slate-950">
+          <dt className="text-sm text-slate-600">{label}</dt>
+          <dd className="text-[1.65rem] font-bold tabular-nums text-slate-950">
             {value} <span className="text-xs font-medium text-slate-600">{unit}</span>
           </dd>
         </div>
@@ -99,14 +113,17 @@ function PRCard() {
 }
 
 export default function TodayPage() {
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [, setRefreshKey] = useState(0)
   const plan = getActivePlan()
-  const workoutDay = getNextWorkoutDay(plan)
-  const isDone = hasTodaySession()
+  const todaySession = getTodaySession()
+  // 打卡后继续展示今天完成的训练，下一套计划留给下次打卡。
+  const completedPlan = ALL_PLANS.find(entry => entry.id === todaySession?.planType) ?? plan
+  const completedDay = completedPlan.days.find(day => day.id === todaySession?.workoutDayId)
+  const workoutDay = completedDay ?? getNextWorkoutDay(plan)
 
   // 一键打卡保存已完成记录，供统计、日历和进步页读取。
   function handleCheckIn() {
-    if (!workoutDay) return
+    if (!workoutDay || getTodaySession()) return
     saveSession({
       id: Date.now().toString(),
       date: new Date().toISOString().slice(0, 10),
@@ -122,12 +139,13 @@ export default function TodayPage() {
   }
 
   return (
-    <div className="space-y-5 px-5 pt-7" key={refreshKey}>
+    <div className="space-y-4 px-5 pt-6">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">我的健身打卡</h1>
-        <p className="mt-1 text-sm text-slate-600">{getTodayText()}</p>
+        <h1 className="text-[2rem] font-bold leading-tight tracking-tight">我的健身打卡</h1>
+        <p className="mt-1 text-base text-slate-600">{getTodayText()}</p>
       </header>
-      <TodayWorkoutCard workoutDay={workoutDay} isDone={isDone} onCheckIn={handleCheckIn} />
+      <TodayPlan workoutDay={workoutDay} />
+      {workoutDay && <CheckInButton isDone={Boolean(todaySession)} onCheckIn={handleCheckIn} />}
       <StatsRow streak={getStreak()} weekly={getWeeklyCount()} monthly={getMonthlyCount()} />
       <PRCard />
       <CheckinCalendar />

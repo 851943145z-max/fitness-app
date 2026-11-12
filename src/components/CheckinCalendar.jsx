@@ -23,15 +23,15 @@ export default function CheckinCalendar() {
   const dateLabel = date => date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })
 
   return (
-    <section>
-      <div className="mb-1 flex items-baseline justify-between gap-2">
-        <h2 className="text-base font-bold">最近 30 天</h2>
+    <section className="rounded-2xl border border-slate-200 p-3">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 className="text-sm font-bold">最近 30 天</h2>
         <span className="text-xs font-semibold text-emerald-800">已打卡 {count} 天</span>
       </div>
-      <p className="mb-3 text-xs text-slate-600">{dateLabel(startDate)} – {dateLabel(today)}</p>
-      <div className="grid grid-cols-7 gap-1.5 rounded-2xl border border-slate-200 p-3">
+      <p className="mb-2 text-xs text-slate-600">{dateLabel(startDate)} – {dateLabel(today)}</p>
+      <div className="grid grid-cols-7 gap-1">
         {['日', '一', '二', '三', '四', '五', '六'].map(label => (
-          <span key={label} className="py-1 text-center text-xs text-slate-600">{label}</span>
+          <span key={label} className="text-center text-xs text-slate-600">{label}</span>
         ))}
         {Array.from({ length: startDate.getDay() }, (_, index) => (
           <span key={`blank-${index}`} aria-hidden="true" />
@@ -41,7 +41,7 @@ export default function CheckinCalendar() {
           return (
             <time key={key} dateTime={key} aria-current={key === todayKey ? 'date' : undefined}
               aria-label={`${dateLabel(date)}${checked ? '，已打卡' : ''}`}
-              className={`flex h-8 items-center justify-center rounded-lg text-xs font-medium tabular-nums
+              className={`flex h-5 items-center justify-center rounded text-xs font-medium tabular-nums
                 ${checked ? 'bg-emerald-700 text-white' : 'bg-slate-50 text-slate-600'}
                 ${key === todayKey ? 'ring-1 ring-inset ring-emerald-700 font-bold' : ''}`}>
               {date.getDate()}

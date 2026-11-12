@@ -179,9 +179,13 @@ export function getRecentSessions(limit = 10) {
 
 // ── 今天是否已完成训练 ──────────────────────────────────────
 
-export function hasTodaySession() {
+export function getTodaySession() {
   const today = new Date().toISOString().slice(0, 10)
-  return loadSessions().some(s => s.date === today && s.completed)
+  return loadSessions().reverse().find(session => session.date === today && session.completed)
+}
+
+export function hasTodaySession() {
+  return Boolean(getTodaySession())
 }
 
 // ── 身体部位训练频率（近30天）──────────────────────────────
