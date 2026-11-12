@@ -4,8 +4,8 @@
   "description": "每日健身打卡，记录训练轨迹",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ecfdf5",
-  "theme_color": "#10b981",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait",
   "icons": [
     { "src": "/icon-180.png", "sizes": "180x180", "type": "image/png" },

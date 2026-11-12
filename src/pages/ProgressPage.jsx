@@ -36,8 +36,8 @@ function StatsHeader() {
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3">
-        <BigStatCard label="总训练次数" value={total} unit="次" icon="🏋️" />
-        <BigStatCard label="连续训练" value={streak} unit="天" icon="🔥" highlight />
+        <BigStatCard label="总训练次数" value={total} unit="次" />
+        <BigStatCard label="连续训练" value={streak} unit="天" highlight />
       </div>
       <div className="grid grid-cols-3 gap-3">
         <SmallStatCard label="本周" value={weekly} unit="次" />
@@ -48,30 +48,29 @@ function StatsHeader() {
   )
 }
 
-function BigStatCard({ label, value, unit, icon, highlight }) {
+function BigStatCard({ label, value, unit, highlight }) {
   return (
     <div className={`rounded-2xl p-4 ${
       highlight
-        ? 'bg-orange-500/20 border border-orange-500/30'
-        : 'bg-white/8 border border-white/10'
+        ? 'bg-emerald-50 border border-emerald-100'
+        : 'bg-white border border-slate-200'
     }`}>
-      <p className="text-2xl mb-1">{icon}</p>
-      <p className={`text-3xl font-black ${highlight ? 'text-orange-400' : 'text-white'}`}>
+      <p className={`text-3xl font-black ${highlight ? 'text-emerald-800' : 'text-slate-950'}`}>
         {value}
         <span className="text-base font-normal ml-1">{unit}</span>
       </p>
-      <p className={`text-xs mt-0.5 ${highlight ? 'text-orange-300' : 'text-slate-400'}`}>{label}</p>
+      <p className={`text-xs mt-0.5 ${highlight ? 'text-emerald-800' : 'text-slate-600'}`}>{label}</p>
     </div>
   )
 }
 
 function SmallStatCard({ label, value, unit }) {
   return (
-    <div className="bg-white/8 border border-white/10 rounded-2xl p-3 text-center">
-      <p className="text-xl font-black text-white">
+    <div className="bg-white border border-slate-200 rounded-2xl p-3 text-center">
+      <p className="text-xl font-bold text-slate-950">
         {value}<span className="text-xs font-normal ml-0.5">{unit}</span>
       </p>
-      <p className="text-[10px] text-slate-400 mt-0.5">{label}</p>
+      <p className="text-[10px] text-slate-600 mt-0.5">{label}</p>
     </div>
   )
 }
@@ -84,9 +83,9 @@ function PRSection() {
 
   if (entries.length === 0) {
     return (
-      <div className="bg-white/8 border border-white/10 rounded-2xl p-4">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
-          🏆 个人最佳记录
+      <div className="bg-white border border-slate-200 rounded-2xl p-4">
+        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
+          个人最佳记录
         </p>
         <p className="text-sm text-slate-500 text-center py-4">
           完成训练后自动记录 PR
@@ -96,9 +95,9 @@ function PRSection() {
   }
 
   return (
-    <div className="bg-white/8 border border-white/10 rounded-2xl p-4">
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-        🏆 个人最佳记录
+    <div className="bg-white border border-slate-200 rounded-2xl p-4">
+      <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
+        个人最佳记录
       </p>
       <div className="flex flex-col gap-2.5">
         {entries.map(([exerciseId, pr]) => {
@@ -106,10 +105,10 @@ function PRSection() {
           return (
             <div key={exerciseId} className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-white font-medium">{ex?.name || exerciseId}</p>
+                <p className="text-sm text-slate-900 font-medium">{ex?.name || exerciseId}</p>
                 <p className="text-[10px] text-slate-500">{pr.date}</p>
               </div>
-              <span className="text-sm text-orange-400 font-bold bg-orange-500/10
+              <span className="text-sm text-emerald-800 font-bold bg-emerald-50
                                px-3 py-1 rounded-full">
                 {pr.weight}kg × {pr.reps}次
               </span>
@@ -131,21 +130,21 @@ function BodyPartFrequency() {
   const max = entries[0]?.[1] || 1
 
   return (
-    <div className="bg-white/8 border border-white/10 rounded-2xl p-4">
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
+    <div className="bg-white border border-slate-200 rounded-2xl p-4">
+      <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
         近30天部位频率
       </p>
       <div className="flex flex-col gap-2">
         {entries.map(([part, count]) => (
           <div key={part} className="flex items-center gap-3">
-            <span className="text-xs text-slate-300 w-12 flex-shrink-0">{part}</span>
-            <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
+            <span className="text-xs text-slate-700 w-12 flex-shrink-0">{part}</span>
+            <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
               <div
-                className="h-full bg-orange-500 rounded-full transition-all"
+                className="h-full bg-emerald-700 rounded-full transition-all"
                 style={{ width: `${(count / max) * 100}%` }}
               />
             </div>
-            <span className="text-xs text-orange-400 font-semibold w-6 text-right">{count}</span>
+            <span className="text-xs text-emerald-800 font-semibold w-6 text-right">{count}</span>
           </div>
         ))}
       </div>
@@ -170,18 +169,18 @@ function SessionCard({ session, onDelete }) {
   const durationMin = session.duration ? Math.round(session.duration / 60) : null
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <div className="px-4 pt-4 pb-3">
         {/* 顶部信息 */}
         <div className="flex items-start justify-between mb-2">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full font-medium">
+              <span className="bg-emerald-100 text-emerald-600 text-xs px-2 py-0.5 rounded-full font-medium">
                 {session.workoutName || '训练'}
               </span>
             </div>
             <p className="font-semibold text-gray-800">{formatDate(session.date)}</p>
-            <p className="text-xs text-gray-400">{daysAgo(session.date)}</p>
+            <p className="text-xs text-slate-600">{daysAgo(session.date)}</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -189,7 +188,7 @@ function SessionCard({ session, onDelete }) {
             {session.exercises?.length > 0 && (
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="text-xs text-gray-400 hover:text-orange-500 border border-gray-200
+                className="text-xs text-slate-600 hover:text-emerald-500 border border-gray-200
                            px-2.5 py-1 rounded-full transition-colors"
               >
                 {expanded ? '收起' : '详情'}
@@ -199,7 +198,7 @@ function SessionCard({ session, onDelete }) {
             {!confirmDel ? (
               <button
                 onClick={() => setConfirmDel(true)}
-                className="text-xs text-gray-300 hover:text-red-400 border border-gray-100
+                className="text-xs text-slate-600 hover:text-red-400 border border-gray-100
                            hover:border-red-200 px-2.5 py-1 rounded-full transition-colors"
               >
                 删除
@@ -216,7 +215,7 @@ function SessionCard({ session, onDelete }) {
                 </button>
                 <button
                   onClick={() => setConfirmDel(false)}
-                  className="text-xs text-gray-400 hover:text-gray-600 px-1.5 py-1"
+                  className="text-xs text-slate-600 hover:text-gray-600 px-1.5 py-1"
                 >
                   取消
                 </button>
@@ -227,11 +226,11 @@ function SessionCard({ session, onDelete }) {
 
         {/* 统计 */}
         <div className="flex gap-4 text-xs text-gray-500">
-          {totalSets > 0   && <span>📦 {totalSets} 组</span>}
-          {totalVolume > 0 && <span>🏋️ {totalVolume.toFixed(0)}kg</span>}
-          {durationMin     && <span>⏱ {durationMin}分钟</span>}
+          {totalSets > 0   && <span>{totalSets} 组</span>}
+          {totalVolume > 0 && <span>{totalVolume.toFixed(0)}kg</span>}
+          {durationMin     && <span>{durationMin}分钟</span>}
           {session.muscleGroups?.length > 0 && (
-            <span>💪 {session.muscleGroups.slice(0, 2).join('·')}</span>
+            <span>{session.muscleGroups.slice(0, 2).join('·')}</span>
           )}
         </div>
       </div>
@@ -246,10 +245,10 @@ function SessionCard({ session, onDelete }) {
             return (
               <div key={ex.exerciseId} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
                   <span className="text-sm text-gray-700">{exercise?.name || ex.exerciseId}</span>
                 </div>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-slate-600">
                   {completedSets.length}组
                   {completedSets[0]?.weight ? ` · ${completedSets[0].weight}kg` : ''}
                 </span>
@@ -274,9 +273,9 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="flex flex-col px-4 pt-10 pb-6 gap-5" key={version}>
+    <div className="flex flex-col px-5 pt-7 gap-5" key={version}>
 
-      <h1 className="text-xl font-black text-white tracking-wide">我的进步</h1>
+      <h1 className="text-3xl font-bold text-slate-950 tracking-tight">我的进步</h1>
 
       {/* 统计头部 */}
       <StatsHeader />
@@ -289,13 +288,12 @@ export default function ProgressPage() {
 
       {/* 最近训练记录 */}
       <div>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
+        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
           最近训练记录
         </p>
         {sessions.length === 0 ? (
-          <div className="flex flex-col items-center py-16 gap-3">
-            <span className="text-5xl">📭</span>
-            <p className="text-slate-400 text-sm">还没有训练记录</p>
+          <div className="flex flex-col items-center rounded-2xl bg-slate-50 py-8 gap-1">
+            <p className="text-slate-600 text-sm">还没有训练记录</p>
             <p className="text-slate-500 text-xs">去「今日」页面开始第一次训练吧</p>
           </div>
         ) : (

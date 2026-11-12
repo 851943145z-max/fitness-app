@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   const { DEEPSEEK_API_KEY } = loadEnv(mode, process.cwd(), 'DEEPSEEK_')
   const { MEAL_ACCESS_CODE } = loadEnv(mode, process.cwd(), 'MEAL_')
   const base = process.env.NETLIFY ? '/' : '/fitness-app/'
+  const localAddresses = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1'])
 
   function addMealAnalysis(server) {
     server.middlewares.use(`${base}api/meal-analysis`, async (request, response, next) => {
@@ -21,6 +22,7 @@ export default defineConfig(({ mode }) => {
         const result = await analyzeMealRequest(input, {
           apiKey: DEEPSEEK_API_KEY,
           accessCode: MEAL_ACCESS_CODE,
+          requireAccessCode: !localAddresses.has(request.socket.remoteAddress),
         })
         response.writeHead(result.status, Object.fromEntries(result.headers))
         response.end(await result.text())

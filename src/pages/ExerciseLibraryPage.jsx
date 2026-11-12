@@ -20,7 +20,7 @@ function ExerciseCard({ exercise, onClick }) {
   return (
     <button
       onClick={() => onClick(exercise)}
-      className="bg-white rounded-2xl shadow-sm overflow-hidden text-left
+      className="bg-white rounded-2xl border border-slate-200 overflow-hidden text-left
                  active:scale-95 transition-transform w-full"
     >
       {/* 图片区域：有图显示图，无图显示紧凑占位 */}
@@ -45,7 +45,7 @@ function ExerciseCard({ exercise, onClick }) {
               primaryMuscles={exercise.primaryMuscles}
               secondaryMuscles={exercise.secondaryMuscles}
             />
-            <span className="absolute top-1.5 right-1.5 bg-orange-100 text-orange-600
+            <span className="absolute top-1.5 right-1.5 bg-emerald-100 text-emerald-800
                              text-[9px] px-1.5 py-0.5 rounded-full font-medium">
               {exercise.equipment}
             </span>
@@ -61,7 +61,7 @@ function ExerciseCard({ exercise, onClick }) {
         </p>
 
         {/* 主练部位 + 细分 */}
-        <p className="text-[10px] text-gray-400 mb-1.5">
+        <p className="text-[10px] text-slate-600 mb-1.5">
           {exercise.primaryMuscles[0]}
           {exercise.subPart && ` · ${exercise.subPart}`}
         </p>
@@ -77,7 +77,7 @@ function ExerciseCard({ exercise, onClick }) {
         </div>
 
         {/* 推荐组数 × 次数 */}
-        <p className="text-[10px] text-blue-600 font-medium">
+        <p className="text-[10px] text-emerald-800 font-medium">
           {exercise.recommendedSets} × {exercise.recommendedReps}
         </p>
       </div>
@@ -95,12 +95,12 @@ function ExerciseDetailModal({ exercise, onClose }) {
   return (
     // 半透明遮罩层
     <div
-      className="fixed inset-0 z-50 bg-black/50 flex items-end"
+      className="fixed inset-0 z-50 bg-slate-950/40 flex items-end justify-center"
       onClick={onClose}
     >
       {/* 弹出卡片（点击内部不关闭）*/}
       <div
-        className="bg-white w-full rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8"
+        className="bg-white w-full max-w-md rounded-t-3xl max-h-[85dvh] overflow-y-auto pb-8"
         onClick={e => e.stopPropagation()}
       >
         {/* 顶部拖拽条 */}
@@ -132,7 +132,7 @@ function ExerciseDetailModal({ exercise, onClose }) {
         <div className="px-4">
           {/* 动作名 + 训练日 */}
           <h2 className="text-xl font-bold text-gray-800 mb-1">{exercise.name}</h2>
-          <p className="text-sm text-gray-400 mb-4">{splitName} · {exercise.bodyPart} · {exercise.subPart}</p>
+          <p className="text-sm text-slate-600 mb-4">{splitName} · {exercise.bodyPart} · {exercise.subPart}</p>
 
           {/* 信息网格 */}
           <div className="grid grid-cols-2 gap-3 mb-4">
@@ -146,7 +146,7 @@ function ExerciseDetailModal({ exercise, onClose }) {
           <Section title="主练肌群">
             <div className="flex flex-wrap gap-2">
               {exercise.primaryMuscles.map(m => (
-                <span key={m} className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">
+                <span key={m} className="bg-emerald-100 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-medium">
                   {m}
                 </span>
               ))}
@@ -168,7 +168,7 @@ function ExerciseDetailModal({ exercise, onClose }) {
 
           {/* 注意事项占位 */}
           <Section title="注意事项">
-            <p className="text-sm text-gray-400">详细说明待补充</p>
+            <p className="text-sm text-slate-600">详细说明待补充</p>
           </Section>
         </div>
       </div>
@@ -179,7 +179,7 @@ function ExerciseDetailModal({ exercise, onClose }) {
 function InfoBox({ label, value }) {
   return (
     <div className="bg-gray-50 rounded-xl p-3">
-      <p className="text-[10px] text-gray-400 mb-0.5">{label}</p>
+      <p className="text-[10px] text-slate-600 mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-gray-700">{value}</p>
     </div>
   )
@@ -188,7 +188,7 @@ function InfoBox({ label, value }) {
 function Section({ title, children }) {
   return (
     <div className="mb-4">
-      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{title}</h3>
+      <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">{title}</h3>
       {children}
     </div>
   )
@@ -263,25 +263,27 @@ function ExerciseLibraryPage() {
 
   return (
     // 全屏容器，竖向 flex，底部导航栏高度已在 App.jsx 的 pb-20 中处理
-    <div className="flex flex-col bg-gray-50 h-screen">
+    <div className="flex flex-col bg-white h-[calc(100dvh-4rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]">
 
       {/* ══ 顶部筛选区（白色卡片，固定不滚动）══ */}
       <div className="bg-white border-b border-gray-100 flex-shrink-0">
 
         {/* 页面标题 */}
-        <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-gray-800">动作库</h1>
+        <div className="px-5 pt-7 pb-3 flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-950">动作库</h1>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">{filteredExercises.length} 个动作</span>
+            <span className="text-xs text-slate-600">{filteredExercises.length} 个动作</span>
             {/* 搜索图标按钮：点击展开/收起搜索框 */}
             <button
+              aria-label={searchOpen ? "关闭搜索" : "搜索动作"}
+              aria-expanded={searchOpen}
               onClick={() => {
                 setSearchOpen(prev => !prev)
                 if (searchOpen) setSearchQuery('')  // 收起时清空关键词
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                 searchOpen
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-emerald-700 text-white'
                   : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
               }`}
             >
@@ -305,15 +307,16 @@ function ExerciseLibraryPage() {
               placeholder="搜索动作名称、部位、器械..."
               autoFocus
               className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2
-                         focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100
+                         focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100
                          bg-white placeholder-gray-300"
             />
             {/* 清空按钮（有内容才显示）*/}
             {searchQuery && (
               <button
+                aria-label="清空搜索"
                 onClick={() => setSearchQuery('')}
                 className="w-7 h-7 flex items-center justify-center rounded-full
-                           bg-gray-100 text-gray-400 hover:bg-gray-200 flex-shrink-0"
+                           bg-gray-100 text-slate-600 hover:bg-gray-200 flex-shrink-0"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" strokeWidth="3" strokeLinecap="round">
@@ -334,7 +337,7 @@ function ExerciseLibraryPage() {
               className={[
                 'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
                 selectedSplit === split.id
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-emerald-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
               ].join(' ')}
             >
@@ -353,7 +356,7 @@ function ExerciseLibraryPage() {
               className={[
                 'flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors',
                 selectedEquipment === eq.id
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-emerald-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
               ].join(' ')}
             >
@@ -368,7 +371,7 @@ function ExerciseLibraryPage() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* 左侧部位导航（独立滚动，固定宽度）*/}
-        <aside className="w-16 bg-white border-r border-gray-100 overflow-y-auto flex-shrink-0 pb-20">
+        <aside className="w-[4.5rem] bg-white border-r border-slate-100 overflow-y-auto shrink-0 pb-3">
           {visibleBodyParts.map(part => (
             <button
               key={part.id}
@@ -377,13 +380,13 @@ function ExerciseLibraryPage() {
                 'w-full py-3 px-1 flex flex-col items-center gap-0.5 transition-colors',
                 'border-b border-gray-50',
                 selectedBodyPart === part.id
-                  ? 'bg-blue-50 border-l-2 border-l-blue-600'
+                  ? 'bg-emerald-50 border-l-2 border-l-emerald-600'
                   : 'hover:bg-gray-50',
               ].join(' ')}
             >
               <span
                 className={`text-[11px] font-medium leading-tight text-center ${
-                  selectedBodyPart === part.id ? 'text-blue-600' : 'text-gray-500'
+                  selectedBodyPart === part.id ? 'text-emerald-800' : 'text-gray-500'
                 }`}
               >
                 {part.name}
@@ -393,7 +396,7 @@ function ExerciseLibraryPage() {
         </aside>
 
         {/* 右侧动作卡片网格（独立滚动）*/}
-        <main className="flex-1 overflow-y-auto p-3 pb-24">
+        <div className="min-w-0 flex-1 overflow-y-auto bg-slate-50 p-3">
           {filteredExercises.length > 0 ? (
             <div className="grid grid-cols-2 gap-3">
               {filteredExercises.map(ex => (
@@ -407,17 +410,16 @@ function ExerciseLibraryPage() {
           ) : (
             // 无结果时的空状态
             <div className="flex flex-col items-center justify-center h-48 gap-3">
-              <span className="text-4xl">🔍</span>
-              <p className="text-sm text-gray-400">没有找到符合条件的动作</p>
+              <p className="text-sm text-slate-600">没有找到符合条件的动作</p>
               <button
-                onClick={() => { setSelectedSplit('all'); setSelectedBodyPart('all'); setSelectedEquipment('all') }}
-                className="text-xs text-blue-600 underline"
+                onClick={() => { setSelectedSplit('all'); setSelectedBodyPart('all'); setSelectedEquipment('all'); setSearchQuery('') }}
+                className="text-xs text-emerald-800 underline"
               >
                 清除所有筛选
               </button>
             </div>
           )}
-        </main>
+        </div>
       </div>
 
       {/* ══ 动作详情弹窗 ══ */}

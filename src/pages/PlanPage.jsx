@@ -47,7 +47,7 @@ function ExerciseSearchDropdown({ onSelect, excludeIds = [] }) {
         placeholder="搜索动作名称、部位或器械..."
         autoFocus
         className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5
-                   focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-100"
+                   focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100"
       />
       {results.length > 0 && (
         <div className="mt-1 border border-gray-100 rounded-xl overflow-hidden shadow-sm">
@@ -56,21 +56,21 @@ function ExerciseSearchDropdown({ onSelect, excludeIds = [] }) {
               key={ex.id}
               onClick={() => { onSelect(ex); setQuery('') }}
               className="w-full text-left px-3 py-2.5 flex items-center justify-between
-                         hover:bg-orange-50 border-b border-gray-50 last:border-0 transition-colors"
+                         hover:bg-emerald-50 border-b border-gray-50 last:border-0 transition-colors"
             >
               <div>
                 <p className="text-sm font-medium text-gray-700">{ex.name}</p>
-                <p className="text-[10px] text-gray-400">
+                <p className="text-[10px] text-slate-600">
                   {ex.bodyPart} · {ex.equipment} · {ex.recommendedSets} × {ex.recommendedReps}
                 </p>
               </div>
-              <span className="text-orange-400 text-xs ml-2 flex-shrink-0">+ 添加</span>
+              <span className="text-emerald-800 text-xs ml-2 flex-shrink-0">+ 添加</span>
             </button>
           ))}
         </div>
       )}
       {query.trim() && results.length === 0 && (
-        <p className="text-xs text-gray-400 text-center py-3">没有找到匹配的动作</p>
+        <p className="text-xs text-slate-600 text-center py-3">没有找到匹配的动作</p>
       )}
     </div>
   )
@@ -121,14 +121,14 @@ function DayEditor({ plan, day, onSaved }) {
   const excludeIds = exercises.map(e => e.exerciseId)
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       {/* 标题栏 */}
-      <div className="px-4 py-3 bg-orange-50 border-b border-orange-100 flex items-center justify-between">
+      <div className="px-4 py-3 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between">
         <div>
-          <p className="font-bold text-gray-800">{day.name} <span className="text-orange-500">编辑中</span></p>
+          <p className="font-bold text-gray-800">{day.name} <span className="text-emerald-800">编辑中</span></p>
           <p className="text-xs text-gray-500">{day.muscles}</p>
         </div>
-        <button onClick={handleReset} className="text-xs text-gray-400 hover:text-gray-600">
+        <button onClick={handleReset} className="text-xs text-slate-600 hover:text-gray-600">
           恢复默认
         </button>
       </div>
@@ -154,7 +154,7 @@ function DayEditor({ plan, day, onSaved }) {
                 <p className="text-sm font-medium text-gray-700 truncate">
                   {ex?.name || e.exerciseId}
                 </p>
-                <p className="text-[10px] text-gray-400">{ex?.bodyPart} · {ex?.equipment}</p>
+                <p className="text-[10px] text-slate-600">{ex?.bodyPart} · {ex?.equipment}</p>
               </div>
 
               {/* 组数 */}
@@ -164,9 +164,9 @@ function DayEditor({ plan, day, onSaved }) {
                   value={e.defaultSets}
                   onChange={ev => updateSets(idx, ev.target.value)}
                   className="w-10 text-center text-xs border border-gray-200 rounded-lg py-1
-                             focus:outline-none focus:border-orange-400"
+                             focus:outline-none focus:border-emerald-400"
                 />
-                <span className="text-[10px] text-gray-400">组</span>
+                <span className="text-[10px] text-slate-600">组</span>
               </div>
 
               {/* 次数范围 */}
@@ -176,9 +176,9 @@ function DayEditor({ plan, day, onSaved }) {
                   value={e.repRange}
                   onChange={ev => updateReps(idx, ev.target.value)}
                   className="w-16 text-center text-xs border border-gray-200 rounded-lg py-1
-                             focus:outline-none focus:border-orange-400"
+                             focus:outline-none focus:border-emerald-400"
                 />
-                <span className="text-[10px] text-gray-400">次</span>
+                <span className="text-[10px] text-slate-600">次</span>
               </div>
             </div>
           )
@@ -187,8 +187,8 @@ function DayEditor({ plan, day, onSaved }) {
         {/* 添加动作 */}
         <button
           onClick={() => setShowSearch(!showSearch)}
-          className="w-full mt-2 py-2 text-sm text-orange-500 hover:text-orange-700
-                     border border-dashed border-orange-300 rounded-xl transition-colors"
+          className="w-full mt-2 py-2 text-sm text-emerald-800 hover:text-emerald-700
+                     border border-dashed border-emerald-300 rounded-xl transition-colors"
         >
           {showSearch ? '收起搜索' : '＋ 添加动作'}
         </button>
@@ -212,8 +212,8 @@ function DayEditor({ plan, day, onSaved }) {
         </button>
         <button
           onClick={handleSave}
-          className="flex-1 py-2.5 text-sm font-bold text-white bg-orange-500
-                     hover:bg-orange-600 rounded-xl transition-colors"
+          className="flex-1 py-2.5 text-sm font-bold text-white bg-emerald-700
+                     hover:bg-emerald-800 rounded-xl transition-colors"
         >
           保存
         </button>
@@ -230,7 +230,7 @@ function DayCard({ plan, day, onEdit }) {
   const isCustomized = !!loadCustomDayExercises(plan.id, day.id)
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <button
         className="w-full px-4 py-3.5 flex items-center justify-between text-left"
         onClick={() => setOpen(!open)}
@@ -240,22 +240,22 @@ function DayCard({ plan, day, onEdit }) {
             <div className="flex items-center gap-1.5">
               <p className="font-bold text-gray-800 text-sm">{day.name}</p>
               {isCustomized && (
-                <span className="text-[9px] bg-orange-100 text-orange-600 px-1.5 py-0.5
+                <span className="text-[9px] bg-emerald-100 text-emerald-600 px-1.5 py-0.5
                                  rounded-full font-semibold">自定义</span>
               )}
             </div>
-            <p className="text-xs text-gray-400">{day.muscles} · {exercises.length}个动作 · {day.estimatedMinutes}分钟</p>
+            <p className="text-xs text-slate-600">{day.muscles} · {exercises.length}个动作 · {day.estimatedMinutes}分钟</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={e => { e.stopPropagation(); onEdit() }}
-            className="text-xs text-orange-500 hover:text-orange-700 px-2.5 py-1
-                       border border-orange-200 rounded-lg transition-colors"
+            className="text-xs text-emerald-800 hover:text-emerald-700 px-2.5 py-1
+                       border border-emerald-200 rounded-lg transition-colors"
           >
             编辑
           </button>
-          <span className="text-gray-300 text-sm">{open ? '▲' : '▼'}</span>
+          <span className="text-slate-600 text-sm">{open ? '▲' : '▼'}</span>
         </div>
       </button>
 
@@ -267,13 +267,13 @@ function DayCard({ plan, day, onEdit }) {
               <div key={i} className="flex items-center justify-between py-1.5
                                       border-b border-gray-50 last:border-0">
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-700">{ex?.name || e.exerciseId}</p>
-                    <p className="text-[10px] text-gray-400">{ex?.primaryMuscles?.[0]} · {ex?.equipment}</p>
+                    <p className="text-[10px] text-slate-600">{ex?.primaryMuscles?.[0]} · {ex?.equipment}</p>
                   </div>
                 </div>
-                <span className="text-xs text-orange-500 font-medium">
+                <span className="text-xs text-emerald-800 font-medium">
                   {e.defaultSets}组 × {e.repRange}次
                 </span>
               </div>
@@ -291,21 +291,21 @@ function PlanSelectorCard({ plan, isActive, onSelect }) {
   return (
     <button
       onClick={() => onSelect(plan.id)}
-      className={`w-full text-left rounded-2xl p-4 border-2 transition-all ${
+      className={`w-full text-left rounded-2xl p-4 border transition-colors ${
         isActive
-          ? 'border-orange-500 bg-orange-500/10'
-          : 'border-white/10 bg-white/5 hover:border-white/20'
+          ? 'border-emerald-600 bg-emerald-50'
+          : 'border-slate-200 bg-white hover:border-slate-300'
       }`}
     >
       <div className="flex items-center justify-between mb-2">
         <div>
-          <p className={`font-bold text-sm ${isActive ? 'text-orange-400' : 'text-white'}`}>
+          <p className={`font-bold text-sm ${isActive ? 'text-emerald-800' : 'text-slate-950'}`}>
             {plan.name}
           </p>
-          <p className="text-[11px] text-slate-400">{plan.chineseName} · {plan.description}</p>
+          <p className="text-[11px] text-slate-600">{plan.chineseName} · {plan.description}</p>
         </div>
         {isActive && (
-          <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-emerald-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
             使用中
           </span>
         )}
@@ -313,7 +313,7 @@ function PlanSelectorCard({ plan, isActive, onSelect }) {
       <div className="flex gap-1.5 flex-wrap">
         {plan.days.map(day => (
           <span key={day.id} className={`text-[10px] px-2 py-0.5 rounded-lg ${
-            isActive ? 'bg-orange-500/20 text-orange-300' : 'bg-white/10 text-slate-400'
+            isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'
           }`}>
             {day.chineseName}
           </span>
@@ -344,11 +344,11 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="flex flex-col px-4 pt-10 pb-6 gap-4" key={version}>
+    <div className="flex flex-col px-5 pt-7 gap-4" key={version}>
 
       <div>
-        <h1 className="text-xl font-black text-white">训练计划</h1>
-        <p className="text-xs text-slate-400 mt-1">选择分化方式，自定义每天的动作</p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950">训练计划</h1>
+        <p className="text-xs text-slate-600 mt-1">选择分化方式，自定义每天的动作</p>
       </div>
 
       {/* 计划选择 */}
@@ -363,11 +363,11 @@ export default function PlanPage() {
         ))}
       </div>
 
-      <div className="border-t border-white/10" />
+      <div className="border-t border-slate-200" />
 
       {/* 当前计划详情 + 编辑 */}
       <div>
-        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-3">
+        <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide mb-3">
           {selectedPlan.name} — 每日动作
         </p>
         <div className="flex flex-col gap-2.5">
@@ -390,9 +390,9 @@ export default function PlanPage() {
       </div>
 
       {/* 提示 */}
-      <div className="bg-white/5 border border-white/8 rounded-2xl p-3.5">
-        <p className="text-xs text-slate-400 leading-relaxed">
-          💡 点击「编辑」可自定义每天的动作和组数，支持搜索全部 53 个动作。修改后会自动保存。
+      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
+        <p className="text-xs text-slate-600 leading-relaxed">
+          点击「编辑」可自定义每天的动作和组数，支持搜索全部 53 个动作。修改后会自动保存。
         </p>
       </div>
 

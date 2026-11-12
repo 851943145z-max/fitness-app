@@ -1,147 +1,54 @@
-// CheckinCalendar.jsx — 最近 30 天打卡日历
-// 绿色 = 当天打卡，灰色 = 未打卡，今天有高亮边框
-
-// ── 工具函数 ──────────────────────────────────────────────
-
-// 从 localStorage 读取所有打卡日期，返回一个 Set（集合）
+// CheckinCalendar.jsx — 最近 30 天打卡日历，兼容旧的打卡键。
 function loadCheckinDates() {
   const raw = localStorage.getItem('checkin_dates')
   const dates = new Set(raw ? JSON.parse(raw) : [])
-
-  // 兼容旧数据：如果只有 checkin_date（旧格式），也把它加进来
   const lastDate = localStorage.getItem('checkin_date')
   if (lastDate) dates.add(lastDate)
-
   return dates
 }
 
-// ── 主组件 ──────────────────────────────────────────────
-
-function CheckinCalendar() {
+export default function CheckinCalendar() {
   const checkinDates = loadCheckinDates()
-  const todayKey     = new Date().toISOString().slice(0, 10)
+  const today = new Date()
+  const todayKey = today.toISOString().slice(0, 10)
+  const startDate = new Date(today)
+  startDate.setDate(today.getDate() - 29)
 
-  // ── 生成最近 30 天的日期数组 ──────────────────────────
-
-  const startDate = new Date()
-  startDate.setDate(startDate.getDate() - 29)
-
-  // 日历第一格是星期几（用于对齐表头）
-  const startWeekday = startDate.getDay()
-
-  const dayCells = Array.from({ length: 30 }, (_, i) => {
+  const days = Array.from({ length: 30 }, (_, index) => {
     const date = new Date(startDate)
-    date.setDate(startDate.getDate() + i)
-    return {
-      key:   date.toISOString().slice(0, 10),
-      day:   date.getDate(),
-      month: date.getMonth() + 1,
-      year:  date.getFullYear(),
-    }
+    date.setDate(startDate.getDate() + index)
+    return { date, key: date.toISOString().slice(0, 10) }
   })
-
-  const checkinCount = dayCells.filter(d => checkinDates.has(d.key)).length
-
-  // ── 计算日历跨越的月份范围，显示在标题区域 ──────────────
-  // 例如：4月26日 — 5月25日
-  const firstCell = dayCells[0]
-  const lastCell  = dayCells[dayCells.length - 1]
-  const rangeText = `${firstCell.month}月${firstCell.day}日 — ${lastCell.month}月${lastCell.day}日`
-
-  // ── 构建网格元素数组（月份分隔行 + 日期格子）─────────────
-  // 思路：遍历 30 天，当月份发生变化时，插入一个 col-span-7 的月份标题行
-
-  let lastRenderedMonth = null
-  const gridItems = []
-
-  // 先放第一个月份标题（在空白对齐格之前，这样不影响列对齐）
-  gridItems.push(
-    <div key="month-first" className="col-span-7 flex items-center gap-2 pt-1 pb-0.5">
-      <span className="text-xs font-bold text-orange-500 tracking-wide">
-        {firstCell.month}月
-      </span>
-      <div className="flex-1 h-px bg-orange-200/60" />
-    </div>
-  )
-  lastRenderedMonth = firstCell.month
-
-  // 对齐空白格（让第一天落在正确的星期列）
-  for (let i = 0; i < startWeekday; i++) {
-    gridItems.push(<div key={`empty-${i}`} />)
-  }
-
-  // 30 个日期格子
-  dayCells.forEach(({ key, day, month }, i) => {
-    // 月份变了 → 插入新的月份标题行
-    if (month !== lastRenderedMonth) {
-      lastRenderedMonth = month
-      gridItems.push(
-        <div key={`month-${month}`} className="col-span-7 flex items-center gap-2 pt-2 pb-0.5">
-          <span className="text-xs font-bold text-orange-500 tracking-wide">
-            {month}月
-          </span>
-          <div className="flex-1 h-px bg-orange-200/60" />
-        </div>
-      )
-    }
-
-    const isChecked = checkinDates.has(key)
-    const isToday   = key === todayKey
-
-    gridItems.push(
-      <div
-        key={key}
-        className={[
-          'aspect-square rounded-lg',
-          'flex items-center justify-center',
-          'text-xs font-medium',
-          isToday   ? 'ring-2 ring-orange-400 ring-offset-1' : '',
-          isChecked ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400',
-        ].join(' ')}
-      >
-        {day}
-      </div>
-    )
-  })
-
-  // ── 页面渲染 ──────────────────────────────────────────
+  const count = days.filter(({ key }) => checkinDates.has(key)).length
+  const dateLabel = date => date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })
 
   return (
-    <div className="w-full max-w-sm">
-
-      {/* 标题 + 统计 */}
-      <div className="flex items-baseline justify-between mb-1">
-        <h2 className="text-base font-bold text-white tracking-wide">
-          最近 30 天
-        </h2>
-        <span className="text-xs text-orange-400 font-medium">
-          已打卡 {checkinCount} / 30 天
-        </span>
+    <section>
+      <div className="mb-1 flex items-baseline justify-between gap-2">
+        <h2 className="text-base font-bold">最近 30 天</h2>
+        <span className="text-xs font-semibold text-emerald-800">已打卡 {count} 天</span>
       </div>
-
-      {/* 日期范围副标题（例如：4月26日 — 5月25日）*/}
-      <p className="text-xs text-slate-400 mb-3">{rangeText}</p>
-
-      {/* 白色卡片容器 */}
-      <div className="bg-white rounded-2xl shadow p-4">
-
-        {/* 星期标题行：日 一 二 三 四 五 六 */}
-        <div className="grid grid-cols-7 mb-2">
-          {['日', '一', '二', '三', '四', '五', '六'].map(label => (
-            <div key={label} className="text-center text-xs text-gray-300 py-1">
-              {label}
-            </div>
-          ))}
-        </div>
-
-        {/* 日期格子区域（月份标题行 + 日期格子混排）*/}
-        <div className="grid grid-cols-7 gap-1">
-          {gridItems}
-        </div>
-
+      <p className="mb-3 text-xs text-slate-600">{dateLabel(startDate)} – {dateLabel(today)}</p>
+      <div className="grid grid-cols-7 gap-1.5 rounded-2xl border border-slate-200 p-3">
+        {['日', '一', '二', '三', '四', '五', '六'].map(label => (
+          <span key={label} className="py-1 text-center text-xs text-slate-600">{label}</span>
+        ))}
+        {Array.from({ length: startDate.getDay() }, (_, index) => (
+          <span key={`blank-${index}`} aria-hidden="true" />
+        ))}
+        {days.map(({ date, key }) => {
+          const checked = checkinDates.has(key)
+          return (
+            <time key={key} dateTime={key} aria-current={key === todayKey ? 'date' : undefined}
+              aria-label={`${dateLabel(date)}${checked ? '，已打卡' : ''}`}
+              className={`flex h-8 items-center justify-center rounded-lg text-xs font-medium tabular-nums
+                ${checked ? 'bg-emerald-700 text-white' : 'bg-slate-50 text-slate-600'}
+                ${key === todayKey ? 'ring-1 ring-inset ring-emerald-700 font-bold' : ''}`}>
+              {date.getDate()}
+            </time>
+          )
+        })}
       </div>
-    </div>
+    </section>
   )
 }
-
-export default CheckinCalendar

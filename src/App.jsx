@@ -1,70 +1,46 @@
-// App.jsx — 应用入口
-// 管理底部导航（今日 / 动作库 / 计划 / 饮食 / 进步）
-
+// App.jsx — 应用入口和五个页面的底部导航。
 import { useState } from 'react'
-import TodayPage           from './pages/TodayPage.jsx'
+import TodayPage from './pages/TodayPage.jsx'
 import ExerciseLibraryPage from './pages/ExerciseLibraryPage.jsx'
-import PlanPage            from './pages/PlanPage.jsx'
-import NutritionPage       from './pages/NutritionPage.jsx'
-import ProgressPage        from './pages/ProgressPage.jsx'
+import PlanPage from './pages/PlanPage.jsx'
+import NutritionPage from './pages/NutritionPage.jsx'
+import ProgressPage from './pages/ProgressPage.jsx'
 
-// 底部导航配置
 const TABS = [
-  { id: 'today',    icon: '🏠', label: '今日'  },
-  { id: 'library',  icon: '📚', label: '动作库' },
-  { id: 'plan',     icon: '📋', label: '计划'  },
-  { id: 'nutrition', icon: '🍽️', label: '饮食'  },
-  { id: 'progress', icon: '📈', label: '进步'  },
+  { id: 'today', label: '今日', Page: TodayPage },
+  { id: 'library', label: '动作库', Page: ExerciseLibraryPage },
+  { id: 'plan', label: '计划', Page: PlanPage },
+  { id: 'nutrition', label: '饮食', Page: NutritionPage },
+  { id: 'progress', label: '进步', Page: ProgressPage },
 ]
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('today')
+  const [currentTab, setCurrentTab] = useState(TABS[0])
+  const Page = currentTab.Page
 
   return (
-    /*
-      外层：占满全屏，深色背景
-      内层容器：最大宽 430px（手机宽度），水平居中
-      这样在桌面上看也像手机 App，而不是横向拉伸
-    */
-    <div className="min-h-screen bg-slate-950 flex justify-center">
-      <div className="w-full max-w-[430px] min-h-screen bg-gradient-to-b from-slate-900 to-slate-800
-                      relative flex flex-col">
-
-        {/* ── 主内容区（底部留出导航栏高度）── */}
-        <main className="flex-1 overflow-y-auto pb-20">
-          {currentTab === 'today'    && <TodayPage />}
-          {currentTab === 'library'  && <ExerciseLibraryPage />}
-          {currentTab === 'plan'     && <PlanPage />}
-          {currentTab === 'nutrition' && <NutritionPage />}
-          {currentTab === 'progress' && <ProgressPage />}
+    <div className="min-h-dvh bg-slate-100">
+      <div className="mx-auto min-h-dvh w-full max-w-md bg-white pt-[env(safe-area-inset-top)] sm:border-x sm:border-slate-200">
+        <main className="pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
+          <Page key={currentTab.id} />
         </main>
 
-        {/* ── 底部导航栏 ── */}
-        <nav className="absolute bottom-0 left-0 right-0
-                        bg-slate-900/95 backdrop-blur border-t border-white/10 flex">
+        <nav aria-label="主导航"
+          className="fixed inset-x-0 bottom-0 z-30 mx-auto flex max-w-md border-t border-slate-200 bg-white/95 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur">
           {TABS.map(tab => (
             <button
+              type="button"
               key={tab.id}
-              onClick={() => setCurrentTab(tab.id)}
-              aria-current={currentTab === tab.id ? 'page' : undefined}
-              className={[
-                'flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors relative',
-                currentTab === tab.id
-                  ? 'text-orange-400'
-                  : 'text-slate-500 hover:text-slate-300',
-              ].join(' ')}
+              onClick={() => setCurrentTab(tab)}
+              aria-current={currentTab.id === tab.id ? 'page' : undefined}
+              className="flex min-h-11 flex-1 items-center justify-center text-sm font-medium text-slate-600 transition-colors hover:text-emerald-800"
             >
-              <span className="text-xl leading-none">{tab.icon}</span>
-              <span className="text-[10px] font-medium">{tab.label}</span>
-              {/* 选中指示线 */}
-              {currentTab === tab.id && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2
-                                 w-6 h-0.5 bg-orange-500 rounded-full" />
-              )}
+              <span className={`rounded-full px-2.5 py-2 ${currentTab.id === tab.id ? 'bg-emerald-50 font-bold text-emerald-800' : ''}`}>
+                {tab.label}
+              </span>
             </button>
           ))}
         </nav>
-
       </div>
     </div>
   )

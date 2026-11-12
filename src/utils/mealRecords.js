@@ -1,6 +1,12 @@
 // 用独立的本地存储键保存餐食记录，原有训练数据继续使用原来的键。
 const MEAL_RECORDS_KEY = 'fitness_meal_records_v1'
 
+// 手机访问局域网 HTTP 地址时，getRandomValues 仍可用。
+export function createMealId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')
+}
+
 export function getMealDate(date = new Date()) {
   return [
     date.getFullYear(),
